@@ -23,7 +23,32 @@ app.get("/getReactions", (req, res) => {
   res.json(emojiReactions);
 });
 
-// Proxy endpoint for Vest API (klines)
+app.get("/ticker/latest", async (req, res) => {
+  try {
+    const url = `${VEST_PROD_API}/ticker/latest`;
+    const response = await axios.get(url, { headers: vest_headers });
+    const tickers = response.data?.tickers;
+
+    res.json(tickers);
+  } catch (error) {
+    console.error("Error fetching tickers:", error);
+    res.status(500).json({ error: "Failed to fetch tickers from Vest API" });
+  }
+});
+
+app.get("/trades", async (req, res) => {
+  const { symbol } = req.query;
+
+  try {
+    const url = `${VEST_PROD_API}/trades?symbol=${symbol}`;
+    const response = await axios.get(url, { headers: vest_headers });
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error fetching trades:", error);
+    res.status(500).json({ error: "Failed to fetch trades from Vest API" });
+  }
+});
+
 app.get("/klines", async (req, res) => {
   const { symbol, interval, startTime, endTime, limit } = req.query;
 

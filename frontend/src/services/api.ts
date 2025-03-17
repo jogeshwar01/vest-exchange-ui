@@ -1,7 +1,18 @@
 import axios from "axios";
-import { KLine } from "../utils/types";
+import { KLine, Trade, Ticker } from "../utils/types";
 
 const BASE_URL = "http://localhost:7000";
+
+export async function getTickers(): Promise<Ticker[]> {
+  const response = await axios.get(`${BASE_URL}/ticker/latest`);
+
+  return response.data;
+}
+
+export async function getTrades(market: string): Promise<Trade[]> {
+  const response = await axios.get(`${BASE_URL}/trades?symbol=${market}`);
+  return response.data;
+}
 
 export async function getKlines(
   market: string,

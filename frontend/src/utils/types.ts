@@ -22,13 +22,37 @@ export enum OrderType {
 }
 
 export interface KLine {
-  open: string; // Opening price (string)
-  high: string; // High price (string)
-  low: string; // Low price (string)
-  close: string; // Close price (string)
-  start: number; // Open time (timestamp as number)
-  volume: string; // Volume (string)
-  end: number; // Close time (timestamp as number)
-  quoteVolume: string; // Quote volume (string)
-  trades: number; // Number of trades (number)
+  open: string;
+  high: string;
+  low: string;
+  close: string;
+  start: number;
+  volume: string;
+  end: number;
+  quoteVolume: string;
+  trades: number;
+}
+
+export interface Trade {
+  id: number;
+  price: string;
+  qty: string;
+  quoteQty: string;
+  time: number;
+}
+
+export interface Depth {
+  bids: [string, string][];
+  asks: [string, string][];
+  lastUpdateId: string;
+}
+
+export interface Ticker {
+  symbol: string;
+  markPrice: string;
+  indexPrice: string;
+  imbalance: string;
+  oneHrFundingRate: string;
+  cumFunding: string;
+  status: string;
 }

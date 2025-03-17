@@ -13,7 +13,7 @@ function MarketButton({ market }: { market: string }) {
             <img src="/tokens/eth.png" alt="ETH" className="w-4 h-4" />
               <span className="text-font text-lg font-bold">{market}</span>
               <div className="rounded bg-[#271714] px-2 py-0.5">
-                <span className="font-mono text-primary text-md align-middle">50X</span>
+                <div className="font-mono text-primary text-md align-middle">50X</div>
               </div>
             </div>
           </button>
