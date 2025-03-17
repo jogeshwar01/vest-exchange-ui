@@ -1,0 +1,25 @@
+#lever-input {
+  background: rgb(255, 90, 68);
+  border: solid 1px rgb(255, 90, 68);
+  height: 2px;
+  outline: none;
+  transition: background 450ms ease-in;
+  -webkit-appearance: none;
+  /* style thumb */
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: rgb(255, 90, 68);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}
+
+#checkbox-input {
+  border: solid 1px rgb(255, 90, 68);
+  height: 15px;
+  transition: background 450ms ease-in;
+  -webkit-appearance: none;
+}

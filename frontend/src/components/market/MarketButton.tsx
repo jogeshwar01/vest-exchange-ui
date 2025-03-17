@@ -9,7 +9,8 @@ function MarketButton({ market }: { market: string }) {
         <div className="grid grow">
           <button className="flex items-center justify-between gap-3 pr-8">
             <div className="flex items-center gap-3">
-              <img src="/tokens/eth.png" alt="ETH" className="w-4 h-4" />
+            <img src="/tokens/star.svg" alt="Vest" className="h-4 color-white" />
+            <img src="/tokens/eth.png" alt="ETH" className="w-4 h-4" />
               <span className="text-font text-lg font-bold">{market}</span>
               <div className="rounded bg-[#271714] px-2 py-0.5">
                 <span className="font-mono text-primary text-md align-middle">50X</span>

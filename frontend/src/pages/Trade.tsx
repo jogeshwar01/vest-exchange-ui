@@ -15,7 +15,7 @@ export const Trade = () => {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center border-b border-border px-8 py-2.5">
+      <div className="flex items-center justify-between border-b border-border px-8 py-2.5">
         <PromoteBar />
       </div>
 
@@ -33,7 +33,7 @@ export const Trade = () => {
               <div className="flex flex-1 flex-col">
                 <TradeInterface market={market as string} />
               </div>
-              <div className="flex w-full max-w-sm flex-col border-l border-border bg-background lg:max-w-md">
+              <div className="flex w-full max-w-sm flex-col border-l border-border bg-background lg:max-w-sm">
                 <SwapInterface market={market as string} />
               </div>
             </div>

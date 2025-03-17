@@ -10,3 +10,13 @@ export interface Ticker {
   trades: string;
   volume: string;
 }
+
+export enum Position {
+  LONG = "LONG",
+  SHORT = "SHORT",
+}
+
+export enum OrderType {
+  MARKET = "MARKET",
+  LIMIT = "LIMIT",
+}
