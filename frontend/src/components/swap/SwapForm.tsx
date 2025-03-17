@@ -124,16 +124,17 @@ function SwapForm() {
                 </div>
 
                 {/* Slippage */}
-                <div className="mt-3">
-                  <div className="flex items-center justify-between px-2.5 py-1.5 text-white text-sm">
+                <div className="mt-15">
+                  <div className="flex items-center justify-between px-2.5 py-1.5 text-vestgrey-100 text-sm">
                     <p>Slippage</p>
                     <div className="flex items-center gap-1.5">
+                      <p>Est: - / Max</p>
                       <input
                         type="text"
-                        className="w-14 bg-vestgrey-800 text-white text-center outline-none"
-                        placeholder="5.00"
+                        disabled
+                        className="w-14 bg-vestgrey-800 p-2 text-white text-center outline-none"
+                        placeholder="5.00%"
                       />
-                      <p>%</p>
                     </div>
                   </div>
                 </div>

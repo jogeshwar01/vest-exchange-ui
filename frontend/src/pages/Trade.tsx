@@ -33,7 +33,7 @@ export const Trade = () => {
               <div className="flex flex-1 flex-col">
                 <TradeInterface market={market as string} />
               </div>
-              <div className="flex w-full max-w-sm flex-col border-l border-border bg-background lg:max-w-sm">
+              <div className="flex w-full max-w-sm flex-col border-l border-border bg-background lg:max-w-xs">
                 <SwapInterface market={market as string} />
               </div>
             </div>

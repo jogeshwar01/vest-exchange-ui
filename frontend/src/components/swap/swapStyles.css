@@ -1,6 +1,5 @@
 #lever-input {
   background: rgb(255, 90, 68);
-  border: solid 1px rgb(255, 90, 68);
   height: 2px;
   outline: none;
   transition: background 450ms ease-in;
@@ -12,8 +11,10 @@
     width: 15px;
     height: 15px;
     background: rgb(255, 90, 68);
-    border-radius: 50%;
+    border: solid 2px rgb(255, 90, 68);
     cursor: pointer;
+    clip-path: polygon(0 0%, 100% 50%, 0 100%, 0 0%);
+    box-shadow: 0 4px 6px rgb(235, 144, 131);
   }
 }
 
