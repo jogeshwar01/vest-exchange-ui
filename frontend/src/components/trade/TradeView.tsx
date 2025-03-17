@@ -4,7 +4,7 @@ import { getKlines } from "../../services/api";
 import { KLine } from "../../utils/types";
 
 const timeOptions = [
-  { label: "1m", value: "1min" },
+  { label: "1m", value: "1m" },
   { label: "1H", value: "1h" },
   { label: "1D", value: "1d" },
   { label: "1W", value: "1w" },
@@ -50,7 +50,7 @@ export const TradeView = ({ market }: { market: string }) => {
           chartRef.current,
           cleanedKlineData,
           {
-            background: "#080f18",
+            background: "rgb(15 15 15)",
             color: "white",
           }
         );
@@ -74,7 +74,7 @@ export const TradeView = ({ market }: { market: string }) => {
   }, [fetchKlineData, market, selectedTime]);
 
   return (
-    <div className="h-full bg-container-bg overflow-hidden flex flex-col">
+    <div className="h-full min-h-[400px] bg-container-bg overflow-hidden flex flex-col">
       <div className="w-full py-2 px-3 flex items-center relative justify-between leading-[16px] flex-1 text-text-emphasis">
         <div className="w-[20%] text-md">{market}</div>
         <div className="flex space-x-2">

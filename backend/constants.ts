@@ -10,3 +10,5 @@ export let emojiReactions: EmojiReactions = {
     { userId: "user4", emoji: "😭" },
   ],
 };
+
+export const VEST_PROD_API = "https://serverprod.vest.exchange/v2";

@@ -47,11 +47,11 @@ export class ChartManager {
       grid: {
         horzLines: {
           visible: true,
-          color: "#101a27",
+          color: "rgb(41, 41, 41)",
         },
         vertLines: {
           visible: true,
-          color: "#101a27",
+          color: "rgb(41, 41, 41)",
         },
       },
       layout: {

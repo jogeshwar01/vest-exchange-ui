@@ -22,13 +22,13 @@ export enum OrderType {
 }
 
 export interface KLine {
-  close: string;
-  end: string;
-  high: string;
-  low: string;
-  open: string;
-  quoteVolume: string;
-  start: string;
-  trades: string;
-  volume: string;
+  open: string; // Opening price (string)
+  high: string; // High price (string)
+  low: string; // Low price (string)
+  close: string; // Close price (string)
+  start: number; // Open time (timestamp as number)
+  end: number; // Close time (timestamp as number)
+  volume: string; // Volume (string)
+  quoteVolume: string; // Quote volume (string)
+  trades: number; // Number of trades (number)
 }
