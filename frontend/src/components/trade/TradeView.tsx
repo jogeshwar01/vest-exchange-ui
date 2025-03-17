@@ -74,7 +74,7 @@ export const TradeView = ({ market }: { market: string }) => {
   }, [fetchKlineData, market, selectedTime]);
 
   return (
-    <div className="h-full min-h-[400px] max-h-[525px] bg-container-bg overflow-hidden flex flex-col">
+    <div className="h-full min-h-[450px] max-h-[525px] bg-container-bg overflow-hidden flex flex-col">
       <div className="w-full py-2 px-3 flex items-center relative justify-between leading-[16px] flex-1 text-text-emphasis">
         <div className="w-[20%] text-md">{market}</div>
         <div className="flex space-x-2">

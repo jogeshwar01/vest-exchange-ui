@@ -15,7 +15,7 @@ export async function getKlines(
   }
 
   if (!limit) {
-    limit = 20;
+    limit = 331;
   }
 
   // Fetching data from the server
@@ -31,8 +31,8 @@ export async function getKlines(
       high: item[2], // High price
       low: item[3], // Low price
       close: item[4], // Close price
-      end: item[5], // Close time
-      volume: item[6], // Volume
+      volume: item[5], // Volume
+      end: item[6], // Close time
       quoteVolume: item[7], // Quote volume
       trades: item[8], // Number of trades
     })
@@ -41,10 +41,5 @@ export async function getKlines(
   // Sorting the data by the end time (ascending order)
   const sortedData = klines.sort((x, y) => (x.end < y.end ? -1 : 1));
 
-  // Removing duplicate entries
-  const filteredData = sortedData.filter((item, index, self) => {
-    return index === self.findIndex((t) => t.end === item.end);
-  });
-
-  return filteredData;
+  return sortedData;
 }

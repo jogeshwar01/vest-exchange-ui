@@ -27,8 +27,8 @@ export interface KLine {
   low: string; // Low price (string)
   close: string; // Close price (string)
   start: number; // Open time (timestamp as number)
-  end: number; // Close time (timestamp as number)
   volume: string; // Volume (string)
+  end: number; // Close time (timestamp as number)
   quoteVolume: string; // Quote volume (string)
   trades: number; // Number of trades (number)
 }
