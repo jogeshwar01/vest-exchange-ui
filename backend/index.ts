@@ -1,22 +1,12 @@
 import express from "express";
 import cors from "cors";
+import { emojiReactions } from "./constants";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Sample data
-let emojiReactions = {
-  "2024-06-24T00:00:00Z": [
-    { userId: "user1", emoji: "🚀" },
-    { userId: "user2", emoji: "😎" },
-  ],
-  "2024-06-24T01:00:00Z": [
-    { userId: "user3", emoji: "😡" },
-    { userId: "user4", emoji: "😭" },
-  ],
-};
-
+// Endpoint to add reactions (existing)
 app.post("/addReaction", (req, res) => {
   const { timestamp, userId, emoji } = req.body;
   if (!emojiReactions[timestamp]) {
@@ -26,10 +16,11 @@ app.post("/addReaction", (req, res) => {
   res.status(200).send("Reaction added");
 });
 
+// Endpoint to get reactions (existing)
 app.get("/getReactions", (req, res) => {
   res.json(emojiReactions);
 });
 
-app.listen(3001, () => {
-  console.log("Server is running on port 3001");
+app.listen(7000, () => {
+  console.log("Server is running on port 7000");
 });
