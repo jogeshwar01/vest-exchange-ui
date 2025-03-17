@@ -15,7 +15,7 @@ export async function getKlines(
   }
 
   if (!limit) {
-    limit = 30;
+    limit = 20;
   }
 
   // Fetching data from the server
@@ -41,5 +41,10 @@ export async function getKlines(
   // Sorting the data by the end time (ascending order)
   const sortedData = klines.sort((x, y) => (x.end < y.end ? -1 : 1));
 
-  return sortedData;
+  // Removing duplicate entries
+  const filteredData = sortedData.filter((item, index, self) => {
+    return index === self.findIndex((t) => t.end === item.end);
+  });
+
+  return filteredData;
 }
