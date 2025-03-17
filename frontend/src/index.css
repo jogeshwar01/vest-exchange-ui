@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --color-border: rgb(41, 41, 41);
+  --color-vestgrey-100: rgb(150 148 148);
+  --color-vestgrey-50: rgb(242, 241, 240);
+  --color-primary: rgb(255 90 68);
+  --color-background: rgb(15 15 15);
+  --color-green: rgb(86 245 190);
+  --text-sm: 10.5px;
+  --text-md: 12px;
+  --text-lg: 13.5px;
+  --text-xl: 15px;
+}
+
+:root {
+  background-color: var(--color-background);
+  color: white;
+}
