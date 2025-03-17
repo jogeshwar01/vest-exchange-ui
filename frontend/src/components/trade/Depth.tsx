@@ -13,8 +13,6 @@ export const Depth = ({ market }: { market: string }) => {
   useEffect(() => {
     getTrades(market).then((trades) => {
       trades = trades.filter((trade) => parseFloat(trade.qty) !== 0);
-      trades = trades.slice(0, 50);
-      setTrades(trades);
 
       const bids: [string, string][] = trades
         .filter((trade) => parseFloat(trade.qty) > 0)
@@ -23,6 +21,9 @@ export const Depth = ({ market }: { market: string }) => {
       const asks: [string, string][] = trades
         .filter((trade) => parseFloat(trade.qty) < 0)
         .map((trade) => [trade.price, (parseFloat(trade.qty) * -1).toString()]);
+
+      bids.sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]));
+      asks.sort((a, b) => parseFloat(b[0]) - parseFloat(a[0]));
 
       const totalBidSize = bids.reduce(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -40,6 +41,9 @@ export const Depth = ({ market }: { market: string }) => {
       setAsks(asks);
       setTotalBidSize(totalBidSize);
       setTotalAskSize(totalAskSize);
+
+      trades = trades.slice(0, 50);
+      setTrades(trades);
     });
   }, [market, setAsks, setBids, setTotalAskSize, setTotalBidSize, setTrades]);
 
