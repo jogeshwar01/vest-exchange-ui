@@ -42,6 +42,7 @@ export class WsManager {
         const messageJson = JSON.parse(decodedStr);
         const channelType =
           messageJson?.channel?.split("@")?.[1] || messageJson.channel;
+
         if (this.callbacks[channelType]) {
           this.callbacks[channelType].forEach(
             ({ callback, channel }: { callback: any; channel: string }) => {
@@ -62,6 +63,14 @@ export class WsManager {
               ) {
                 const tickers = messageJson.data;
                 callback(tickers);
+              }
+
+              if (
+                channelType?.startsWith("kline") &&
+                channel === messageJson.channel
+              ) {
+                const klineData = messageJson.data;
+                callback(klineData);
               }
             }
           );

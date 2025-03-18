@@ -3,6 +3,7 @@ import { ChartManager } from "../../utils/chart_manager";
 import { getKlines } from "../../services/api";
 import { KLine } from "../../utils/types";
 import { TradesContext } from "../../state/TradesProvider";
+import { WsManager } from "../../utils/ws_manager";
 
 const timeOptions = [
   { label: "1m", value: "1m" },
@@ -13,7 +14,7 @@ const timeOptions = [
 export const TradeView = ({ market }: { market: string }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartManagerRef = useRef<ChartManager | null>(null);
-  const [selectedTime, setSelectedTime] = useState("1m"); // Default to 1 hour
+  const [selectedTime, setSelectedTime] = useState("1m"); // Default to 1 minute
 
   const { ticker } = useContext(TradesContext);
 
@@ -24,9 +25,7 @@ export const TradeView = ({ market }: { market: string }) => {
         klineData = await getKlines(
           market,
           interval,
-          Math.floor(
-            new Date().getTime() - 1000 * 60 * 60 * 24 * 7 // Last week
-          )
+          Math.floor(new Date().getTime() - 1000 * 60 * 60 * 24 * 7) // Last week
         );
       } catch (e) {
         console.error("Error fetching Kline data:", e);
@@ -34,7 +33,7 @@ export const TradeView = ({ market }: { market: string }) => {
 
       if (chartRef.current && klineData.length > 0) {
         if (chartManagerRef.current) {
-          chartManagerRef.current.destroy(); // Destroy the existing chart instance
+          chartManagerRef.current.destroy(); // Destroy existing chart instance
         }
 
         const cleanedKlineData = klineData
@@ -64,14 +63,59 @@ export const TradeView = ({ market }: { market: string }) => {
   );
 
   useEffect(() => {
+    // Fetch initial Kline data only on first load
     fetchKlineData(selectedTime);
 
-    // Cleanup the chart when component unmounts or time interval changes
+    WsManager.getInstance().registerCallback(
+      `kline_${selectedTime}`,
+      (data: any) => {
+        const kline: KLine = {
+          start: data[0],
+          open: data[1],
+          high: data[2],
+          low: data[3],
+          close: data[4],
+          volume: data[5],
+          end: data[6],
+          quoteVolume: data[7],
+          trades: data[8],
+        };
+
+        const cleanedKline = {
+          close: parseFloat(kline.close),
+          high: parseFloat(kline.high),
+          low: parseFloat(kline.low),
+          open: parseFloat(kline.open),
+          timestamp: new Date(kline.end),
+        };
+
+        if (chartManagerRef.current) {
+          chartManagerRef.current.update(cleanedKline);
+        }
+      },
+      `${market}@kline_${selectedTime}`
+    );
+
+    WsManager.getInstance().sendMessage({
+      method: "SUBSCRIBE",
+      params: [`${market}@kline_${selectedTime}`],
+    });
+
+    // Cleanup the chart and WebSocket callback on unmount or when time interval changes
     return () => {
       if (chartManagerRef.current) {
         chartManagerRef.current.destroy();
         chartManagerRef.current = null; // Ensure the reference is cleared after destruction
       }
+
+      WsManager.getInstance().deRegisterCallback(
+        `kline_${selectedTime}`,
+        `${market}@kline_${selectedTime}`
+      );
+      WsManager.getInstance().sendMessage({
+        method: "UNSUBSCRIBE",
+        params: [`${market}@kline_${selectedTime}`],
+      });
     };
   }, [fetchKlineData, market, selectedTime]);
 

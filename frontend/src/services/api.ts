@@ -26,7 +26,8 @@ export async function getKlines(
   }
 
   if (!limit) {
-    limit = 331;
+    if (interval === "1m" || interval === "1h") limit = 331;
+    else limit = 50;
   }
 
   // Fetching data from the server
