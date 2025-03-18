@@ -156,7 +156,7 @@ function SwapForm() {
               {/* Submit Button */}
               <button
                 disabled
-                className="w-full h-12 bg-primary disabled text-black font-mono text-md uppercase"
+                className="w-full h-12 bg-primary disabled disabled:opacity-50 text-black font-mono text-md uppercase"
               >
                 Place Order
               </button>

@@ -1,14 +1,13 @@
 export interface Ticker {
-  firstPrice: string;
-  high: string;
-  lastPrice: string;
-  low: string;
+  symbol: string;
+  markPrice: string;
+  indexPrice: string;
+  imbalance: string;
+  oneHrFundingRate: string;
+  cumFunding: string;
   priceChange: string;
   priceChangePercent: string;
-  quoteVolume: string;
-  symbol: string;
-  trades: string;
-  volume: string;
+  status: string;
 }
 
 export enum Position {

@@ -1,4 +1,3 @@
-// export const BASE_URL = "wss://ws.backpack.exchange/"
 export const BASE_URL =
   "wss://wsprod.vest.exchange/ws-api?version=1.0&xwebsocketserver=restserver0";
 
@@ -24,7 +23,7 @@ export class WsManager {
     return this.instance;
   }
 
-  init() {
+  async init() {
     this.ws.onopen = () => {
       this.initialized = true;
       this.bufferedMessages.forEach((message) => {
@@ -33,30 +32,51 @@ export class WsManager {
       this.bufferedMessages = [];
     };
 
-    this.ws.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      const type = message.data.e;
-      if (this.callbacks[type]) {
-        this.callbacks[type].forEach(({ callback }: { callback: any }) => {
-          if (type === "depth") {
-            const updatedBids = message.data.b;
-            const updatedAsks = message.data.a;
-            callback({ bids: updatedBids, asks: updatedAsks });
-          }
+    this.ws.onmessage = async (event) => {
+      const messageData: Blob = event.data;
+      const arrayBuffer = await messageData.arrayBuffer();
+      const decoder = new TextDecoder("utf-8");
+      const decodedStr = decoder.decode(new Uint8Array(arrayBuffer));
 
-          if (type === "trade") {
-            const trades = message.data;
-            callback(trades);
-          }
-        });
+      try {
+        const messageJson = JSON.parse(decodedStr);
+        const channelType =
+          messageJson?.channel?.split("@")?.[1] || messageJson.channel;
+        if (this.callbacks[channelType]) {
+          this.callbacks[channelType].forEach(
+            ({ callback, channel }: { callback: any; channel: string }) => {
+              if (channelType === "depth" && channel === messageJson.channel) {
+                const updatedBids = messageJson.data.bids;
+                const updatedAsks = messageJson.data.asks;
+                callback({ bids: updatedBids, asks: updatedAsks });
+              }
+
+              if (channelType === "trades" && channel === messageJson.channel) {
+                const trades = messageJson.data;
+                callback(trades);
+              }
+
+              if (
+                channelType === "tickers" &&
+                channel === messageJson.channel
+              ) {
+                const tickers = messageJson.data;
+                callback(tickers);
+              }
+            }
+          );
+        }
+      } catch (error) {
+        console.error("Error parsing message data:", error);
       }
     };
   }
 
   sendMessage(message: any) {
+    const currentTimeStamp = new Date().getTime();
     const messageToSend = {
       ...message,
-      id: this.id++,
+      id: currentTimeStamp,
     };
     if (!this.initialized) {
       this.bufferedMessages.push(messageToSend);
@@ -65,16 +85,15 @@ export class WsManager {
     this.ws.send(JSON.stringify(messageToSend));
   }
 
-  async registerCallback(type: string, callback: any, id: string) {
+  async registerCallback(type: string, callback: any, channel: string) {
     this.callbacks[type] = this.callbacks[type] || [];
-    this.callbacks[type].push({ callback, id });
-    // "ticker" => callback
+    this.callbacks[type].push({ callback, channel });
   }
 
-  async deRegisterCallback(type: string, id: string) {
+  async deRegisterCallback(type: string, channel: string) {
     if (this.callbacks[type]) {
       const index = this.callbacks[type].findIndex(
-        (callback: any) => callback.id === id
+        (callback: any) => callback.channel === channel
       );
       if (index !== -1) {
         this.callbacks[type].splice(index, 1);

@@ -13,87 +13,43 @@ export const Depth = ({ market }: { market: string }) => {
     useContext(TradesContext);
 
   useEffect(() => {
+    getTrades(market).then((trades) => {
+      trades = trades.filter((trade) => parseFloat(trade.qty) !== 0);
+      trades = trades.slice(0, 50);
+      setTrades(trades);
+    });
+
     WsManager.getInstance().registerCallback(
       "depth",
       (data: any) => {
-        console.log("depth has been updated");
-        console.log(data);
+        setBids(data.bids);
+        setAsks(data.asks);
+        setTotalBidSize(
+          data.bids.reduce(
+            (acc: number, bid: any) => acc + parseFloat(bid[1]),
+            0
+          )
+        );
 
-        setBids((originalBids) => {
-          const bidsAfterUpdate = [...(originalBids || [])];
-
-          for (let i = 0; i < bidsAfterUpdate.length; i++) {
-            for (let j = 0; j < data.bids.length; j++) {
-              if (bidsAfterUpdate[i][0] === data.bids[j][0]) {
-                bidsAfterUpdate[i][1] = data.bids[j][1];
-                if (Number(bidsAfterUpdate[i][1]) === 0) {
-                  bidsAfterUpdate.splice(i, 1);
-                }
-                break;
-              }
-            }
-          }
-
-          for (let j = 0; j < data.bids.length; j++) {
-            if (
-              Number(data.bids[j][1]) !== 0 &&
-              !bidsAfterUpdate.map((x) => x[0]).includes(data.bids[j][0])
-            ) {
-              bidsAfterUpdate.push(data.bids[j]);
-              break;
-            }
-          }
-          bidsAfterUpdate.sort((x, y) =>
-            Number(y[0]) < Number(x[0]) ? -1 : 1
-          );
-          return bidsAfterUpdate;
-        });
-
-        setAsks((originalAsks) => {
-          const asksAfterUpdate = [...(originalAsks || [])];
-
-          for (let i = 0; i < asksAfterUpdate.length; i++) {
-            for (let j = 0; j < data.asks.length; j++) {
-              if (asksAfterUpdate[i][0] === data.asks[j][0]) {
-                asksAfterUpdate[i][1] = data.asks[j][1];
-                if (Number(asksAfterUpdate[i][1]) === 0) {
-                  asksAfterUpdate.splice(i, 1);
-                }
-                break;
-              }
-            }
-          }
-
-          for (let j = 0; j < data.asks.length; j++) {
-            if (
-              Number(data.asks[j][1]) !== 0 &&
-              !asksAfterUpdate.map((x) => x[0]).includes(data.asks[j][0])
-            ) {
-              asksAfterUpdate.push(data.asks[j]);
-              break;
-            }
-          }
-          asksAfterUpdate.sort((x, y) =>
-            Number(y[0]) < Number(x[0]) ? 1 : -1
-          );
-          return asksAfterUpdate;
-        });
+        setTotalAskSize(
+          data.asks.reduce(
+            (acc: number, ask: any) => acc + parseFloat(ask[1]),
+            0
+          )
+        );
       },
-      `DEPTH-${market}`
+      `${market}@depth`
     );
 
     WsManager.getInstance().registerCallback(
-      "trade",
+      "trades",
       (data: any) => {
-        console.log("trade has been updated");
-        console.log(data);
-
         const newTrade: Trade = {
-          id: data.t,
-          price: data.p,
-          qty: data.q,
-          quoteQty: data.q,
-          time: data.T,
+          id: data.id,
+          price: data.price,
+          qty: data.qty,
+          quoteQty: data.quoteQty,
+          time: data.time,
         };
 
         setTrades((oldTrades) => {
@@ -103,16 +59,7 @@ export const Depth = ({ market }: { market: string }) => {
           return newTrades;
         });
       },
-      `TRADE-${market}`
-    );
-
-    WsManager.getInstance().registerCallback(
-      "ticker",
-      (data: any) => {
-        console.log("ticker has been updated");
-        console.log(data);
-      },
-      `TICKER-${market}`
+      `${market}@trades`
     );
 
     WsManager.getInstance().sendMessage({
@@ -125,69 +72,23 @@ export const Depth = ({ market }: { market: string }) => {
       params: [`${market}@trades`],
     });
 
-    WsManager.getInstance().sendMessage({
-      method: "SUBSCRIBE",
-      params: [`tickers`],
-    });
-
-    getTrades(market).then((trades) => {
-      trades = trades.filter((trade) => parseFloat(trade.qty) !== 0);
-
-      const bids: [string, string][] = trades
-        .filter((trade) => parseFloat(trade.qty) > 0)
-        .map((trade) => [trade.price, trade.qty]);
-
-      const asks: [string, string][] = trades
-        .filter((trade) => parseFloat(trade.qty) < 0)
-        .map((trade) => [trade.price, (parseFloat(trade.qty) * -1).toString()]);
-
-      bids.sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]));
-      asks.sort((a, b) => parseFloat(b[0]) - parseFloat(a[0]));
-
-      const totalBidSize = bids.reduce(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        (total, [_, size]) => total + parseFloat(size),
-        0
-      );
-
-      const totalAskSize = asks.reduce(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        (total, [_, size]) => total + parseFloat(size),
-        0
-      );
-
-      setBids(bids);
-      setAsks(asks);
-      setTotalBidSize(totalBidSize);
-      setTotalAskSize(totalAskSize);
-
-      trades = trades.slice(0, 50);
-      setTrades(trades);
-    });
-
     return () => {
-      WsManager.getInstance().deRegisterCallback("depth", `DEPTH-${market}`);
+      WsManager.getInstance().deRegisterCallback("depth", `${market}@depth`);
       WsManager.getInstance().sendMessage({
         method: "UNSUBSCRIBE",
         params: [`${market}@depth`],
       });
 
-      WsManager.getInstance().deRegisterCallback("trade", `TRADE-${market}`);
+      WsManager.getInstance().deRegisterCallback("trades", `${market}@trades`);
       WsManager.getInstance().sendMessage({
         method: "UNSUBSCRIBE",
         params: [`${market}@trades`],
-      });
-
-      WsManager.getInstance().deRegisterCallback("ticker", `TICKER-${market}`);
-      WsManager.getInstance().sendMessage({
-        method: "UNSUBSCRIBE",
-        params: [`tickers`],
       });
     };
   }, [market, setAsks, setBids, setTotalAskSize, setTotalBidSize, setTrades]);
 
   return (
-    <div className="flex w-full max-w-xs flex-col border-l border-border">
+    <div className="flex w-full max-w-[300px] flex-col border-l border-border">
       <div className="flex flex-col">
         {/* Tabs Section */}
         <div className="relative">

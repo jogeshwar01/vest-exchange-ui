@@ -12,8 +12,8 @@ interface TradesProviderProps {
 }
 
 interface TradesContextType {
-  ticker: Ticker | null;
-  setTicker: Dispatch<SetStateAction<Ticker | null>>;
+  ticker: Ticker | undefined;
+  setTicker: Dispatch<SetStateAction<Ticker | undefined>>;
   trades: Trade[];
   setTrades: Dispatch<SetStateAction<Trade[]>>;
   bids: [string, string][];
@@ -27,7 +27,7 @@ interface TradesContextType {
 }
 
 const TradesContext = createContext<TradesContextType>({
-  ticker: null,
+  ticker: undefined,
   setTicker: () => {},
   trades: [],
   setTrades: () => {},
@@ -42,7 +42,7 @@ const TradesContext = createContext<TradesContextType>({
 });
 
 const TradesProvider = ({ children }: TradesProviderProps) => {
-  const [ticker, setTicker] = useState<Ticker | null>(null);
+  const [ticker, setTicker] = useState<Ticker | undefined>(undefined);
   const [trades, setTrades] = useState<Trade[]>([]);
 
   const [bids, setBids] = useState<[string, string][]>([]); // [price, quantity]
