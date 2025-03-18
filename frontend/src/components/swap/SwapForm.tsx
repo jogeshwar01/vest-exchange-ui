@@ -1,16 +1,22 @@
+import { useMemo } from "react";
 import "./swapStyles.css";
 
-function SwapForm() {
+const SwapForm: React.FC<{ market: string }> = ({ market }) => {
   const infoSections = [
     { label: "Available Funds", value: "-" },
     { label: "Price", value: "1,913.382" },
   ];
 
-  const orderInfo = [
-    { label: "Liquidation Price", value: "-" },
-    { label: "Order Size", value: "0.000 ETH (-)" },
-    { label: "Fee", value: "0.01% (-)" },
-  ];
+  const orderInfo = useMemo(() => {
+    return [
+      { label: "Liquidation Price", value: "-" },
+      {
+        label: "Order Size",
+        value: `0.000 ${market?.split("-")?.[0] || ""} (-)`,
+      },
+      { label: "Fee", value: "0.01% (-)" },
+    ];
+  }, [market]);
 
   const accountHealthInfo = [
     { label: "Account Health", value: "-" },
@@ -181,6 +187,6 @@ function SwapForm() {
       </div>
     </form>
   );
-}
+};
 
 export default SwapForm;

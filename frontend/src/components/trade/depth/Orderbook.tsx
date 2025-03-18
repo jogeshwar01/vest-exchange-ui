@@ -2,7 +2,8 @@ import { useContext, useEffect, useRef, useState, useMemo } from "react";
 import { TradesContext } from "../../../state/TradesProvider";
 
 export const OrderBook = () => {
-  const { bids, asks, totalBidSize, totalAskSize } = useContext(TradesContext);
+  const { ticker, bids, asks, totalBidSize, totalAskSize } =
+    useContext(TradesContext);
 
   const bidsRef = useRef<HTMLDivElement | null>(null);
   const asksRef = useRef<HTMLDivElement | null>(null);
@@ -57,8 +58,12 @@ export const OrderBook = () => {
         <div className="flex flex-col h-full text-white fadein-floating-element bg-background xs:min-h-[25vh] md:min-h-0">
           <div className="flex justify-between text-xs px-2 py-1 text-vestgrey-100">
             <div className="font-[300] text-[12px] text-center">Price</div>
-            <div className="font-[300] text-[12px] ml-8">Size (ETH)</div>
-            <div className="font-[300] text-[12px] text-left">Total (ETH)</div>
+            <div className="font-[300] text-[12px] ml-8">
+              Size ({ticker?.symbol?.split("-")?.[0]})
+            </div>
+            <div className="font-[300] text-[12px] text-left">
+              Total ({ticker?.symbol?.split("-")?.[0]})
+            </div>
           </div>
 
           <div className="flex-1 flex flex-col relative overflow-hidden">

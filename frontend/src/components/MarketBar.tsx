@@ -43,7 +43,7 @@ function MarketBar({ market }: { market: string }) {
   return (
     <>
       <div className="col-span-4 grid grid-cols-[320px_1fr]">
-        <MarketButton market={market} />
+        <MarketButton />
         <MarketStats />
       </div>
       <LeverageButton />

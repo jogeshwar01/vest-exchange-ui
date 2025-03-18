@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { TradesContext } from "../../../state/TradesProvider";
 
 export const RecentTrades = () => {
-  const { trades } = useContext(TradesContext);
+  const { ticker, trades } = useContext(TradesContext);
 
   const formatTime = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -19,7 +19,7 @@ export const RecentTrades = () => {
       <div className="grid grid-cols-3 gap-4">
         <span className="font-[300] text-[12px] text-left">Price</span>
         <span className="font-[300] text-[12px] pr-1 text-center">
-          Size (ETH)
+          Size ({ticker?.symbol?.split("-")?.[0]})
         </span>
         <span className="font-[300] text-[12px] text-right">Time</span>
       </div>

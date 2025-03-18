@@ -16,7 +16,7 @@ const SwapInterface: React.FC<{ market: string }> = ({ market }) => {
       <div className="w-full">
         <OrderTypeBar orderType={orderType} setOrderType={setOrderType} />
       </div>
-      <SwapForm />
+      <SwapForm market={market} />
     </div>
   );
 };

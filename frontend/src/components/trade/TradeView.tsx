@@ -1,19 +1,21 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ChartManager } from "../../utils/chart_manager";
 import { getKlines } from "../../services/api";
 import { KLine } from "../../utils/types";
+import { TradesContext } from "../../state/TradesProvider";
 
 const timeOptions = [
   { label: "1m", value: "1m" },
   { label: "1H", value: "1h" },
   { label: "1D", value: "1d" },
-  { label: "1W", value: "1w" },
 ];
 
 export const TradeView = ({ market }: { market: string }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartManagerRef = useRef<ChartManager | null>(null);
   const [selectedTime, setSelectedTime] = useState("1m"); // Default to 1 hour
+
+  const { ticker } = useContext(TradesContext);
 
   const fetchKlineData = useCallback(
     async (interval: string) => {
@@ -76,7 +78,9 @@ export const TradeView = ({ market }: { market: string }) => {
   return (
     <div className="h-full min-h-[450px] max-h-[525px] bg-container-bg overflow-hidden w-full ml-2 flex flex-col">
       <div className="w-full py-2 px-3 flex items-center relative justify-between leading-[16px] flex-1 text-text-emphasis">
-        <div className="w-[20%] text-md">{market}</div>
+        <div className="w-[20%] text-lg font-semibold">
+          {ticker?.symbol ? `${ticker?.symbol?.split("-")?.[0]} / USDC` : ""}
+        </div>
         <div className="flex space-x-2">
           <div className="w-[20%] py-1 text-xs">Time</div>
 
