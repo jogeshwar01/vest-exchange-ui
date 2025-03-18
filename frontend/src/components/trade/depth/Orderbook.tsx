@@ -1,7 +1,11 @@
 import { useContext, useEffect, useRef, useState, useMemo } from "react";
 import { TradesContext } from "../../../state/TradesProvider";
 
-export const OrderBook = () => {
+interface OrderBookProps {
+  valueSymbol: string;
+}
+
+export const OrderBook = ({ valueSymbol }: OrderBookProps) => {
   const { ticker, bids, asks, totalBidSize, totalAskSize } =
     useContext(TradesContext);
 
@@ -89,7 +93,11 @@ export const OrderBook = () => {
                           {parseFloat(order[0]).toFixed(3)}
                         </div>
                         <div className="z-10 text-xs leading-6 text-white">
-                          {order[1]}
+                          {valueSymbol !== "USDC"
+                            ? order[1]
+                            : (
+                                parseFloat(order[1]) * parseFloat(order[0])
+                              ).toFixed(3)}
                         </div>
                         <div className="z-10 text-xs leading-6 text-white">
                           {cumulativeAskSize.toFixed(3)}
@@ -151,7 +159,11 @@ export const OrderBook = () => {
                           {parseFloat(order[0]).toFixed(3)}
                         </div>
                         <div className="z-10 text-xs leading-6 text-white">
-                          {order[1]}
+                          {valueSymbol !== "USDC"
+                            ? order[1]
+                            : (
+                                parseFloat(order[1]) * parseFloat(order[0])
+                              ).toFixed(3)}
                         </div>
                         <div className="z-10 text-xs leading-6 text-white">
                           {cumulativeBidSize.toFixed(3)}

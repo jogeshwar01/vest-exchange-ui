@@ -7,8 +7,8 @@ import { WsManager } from "../../utils/ws_manager";
 import { Trade } from "../../utils/types";
 
 export const Depth = ({ market }: { market: string }) => {
-  // State to track active tab
   const [activeTab, setActiveTab] = useState("orderbook"); // 'orderbook' or 'recentTrades'
+  const [valueSymbol, setValueSymbol] = useState(market?.split("-")[0]);
   const { setTrades, setAsks, setBids, setTotalAskSize, setTotalBidSize } =
     useContext(TradesContext);
 
@@ -87,6 +87,10 @@ export const Depth = ({ market }: { market: string }) => {
     };
   }, [market, setAsks, setBids, setTotalAskSize, setTotalBidSize, setTrades]);
 
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setValueSymbol(e.target.value);
+  };
+
   return (
     <div className="flex w-full max-w-[300px] flex-col border-l border-border">
       <div className="flex flex-col">
@@ -134,14 +138,22 @@ export const Depth = ({ market }: { market: string }) => {
                 <div className="absolute left-0 bottom-0 w-full z-10 h-[1px] bg-primary"></div>
               )}
             </div>
+            <div className="flex items-center justify-center mr-2 focus:outline-none">
+              <select
+                className="bg-background text-sm focus:outline-none"
+                value={valueSymbol}
+                onChange={handleSelectChange}
+              >
+                <option
+                  className="hover:bg-vestgrey-900 focus:bg-vestgrey-900"
+                  value={market?.split("-")[0]}
+                >
+                  {market?.split("-")[0]}
+                </option>
+                <option value="USDC">USDC</option>
+              </select>
+            </div>
           </div>
-          <div
-            className="w-full absolute inset-x-0 bottom-0 h-[1px] z-0"
-            style={{
-              background:
-                "linear-gradient(to left, rgba(0,0,0,0), var(--darkBlue-50))",
-            }}
-          ></div>
         </div>
 
         {/* Custom style for WebKit-based browsers to hide scrollbar */}
@@ -152,7 +164,11 @@ export const Depth = ({ market }: { market: string }) => {
         `}</style>
 
         {/* Tab Content */}
-        {activeTab === "orderbook" ? <OrderBook /> : <RecentTrades />}
+        {activeTab === "orderbook" ? (
+          <OrderBook valueSymbol={valueSymbol} />
+        ) : (
+          <RecentTrades />
+        )}
       </div>
     </div>
   );
