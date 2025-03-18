@@ -1,5 +1,4 @@
-export const BASE_URL =
-  "wss://wsprod.vest.exchange/ws-api?version=1.0&xwebsocketserver=restserver0";
+import { WEBSOCKET_SERVER_URL } from "./constants";
 
 export class WsManager {
   private ws: WebSocket;
@@ -10,7 +9,7 @@ export class WsManager {
   private initialized: boolean = false;
 
   private constructor() {
-    this.ws = new WebSocket(BASE_URL);
+    this.ws = new WebSocket(WEBSOCKET_SERVER_URL);
     this.bufferedMessages = [];
     this.id = 1;
     this.init();

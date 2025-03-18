@@ -1,16 +1,17 @@
 import axios from "axios";
 import { KLine, Trade, Ticker } from "../utils/types";
-
-const BASE_URL = "http://localhost:7000";
+import { PROXY_SERVER_URL } from "../utils/constants";
 
 export async function getTickers(): Promise<Ticker[]> {
-  const response = await axios.get(`${BASE_URL}/ticker/latest`);
+  const response = await axios.get(`${PROXY_SERVER_URL}/ticker/latest`);
 
   return response.data;
 }
 
 export async function getTrades(market: string): Promise<Trade[]> {
-  const response = await axios.get(`${BASE_URL}/trades?symbol=${market}`);
+  const response = await axios.get(
+    `${PROXY_SERVER_URL}/trades?symbol=${market}`
+  );
   return response.data;
 }
 
@@ -32,7 +33,7 @@ export async function getKlines(
 
   // Fetching data from the server
   const response = await axios.get(
-    `${BASE_URL}/klines?symbol=${market}&interval=${interval}&startTime=${startTime}&endTime=${endTime}&limit=${limit}`
+    `${PROXY_SERVER_URL}/klines?symbol=${market}&interval=${interval}&startTime=${startTime}&endTime=${endTime}&limit=${limit}`
   );
 
   // Converting the data to the correct KLine format

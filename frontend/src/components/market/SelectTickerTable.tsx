@@ -22,33 +22,38 @@ function SelectTickerTable({
   };
 
   // Filter the tickers based on the search query
-  const filteredTickers = tickers.filter((ticker) =>
-    ticker.symbol.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTickers = tickers
+    .filter((ticker) =>
+      ticker.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => a.symbol.localeCompare(b.symbol));
 
   return (
-    <div className="absolute left-0 mt-14 z-100 h-full max-h-[400px] overflow-hidden bg-background border border-border text-xs">
-      <input
-        type="text"
-        placeholder="Search..."
-        className="w-full p-2 rounded z-200 focus:outline-none"
-        value={searchQuery}
-        onChange={handleSearchChange}
-      />
+    <div className="absolute left-0 mt-14 z-100 h-full max-h-[400px] w-[800px] overflow-hidden bg-vestgrey-900 border border-border text-xs">
+      <div className="flex justify-center items-center gap-1 h-[50px]">
+        <img src="/common/search.svg" alt="Vest" className="ml-4 h-3" />
+        <input
+          type="text"
+          placeholder="SEARCH"
+          className="w-full p-2 rounded z-200 focus:outline-none"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+      </div>
       <div className="overflow-y-auto max-h-[400px]">
-        <table className="w-[300px] text-nowrap bg-background border-t border-border">
-          <thead className="sticky -top-1 bg-vestgrey-800 z-10">
+        <table className="text-nowrap border-t border-border">
+          <thead className="sticky -top-1 z-10 bg-vestgrey-800">
             <tr className="text-left text-mono text-sm uppercase">
-              <th className="w-1/5 cursor-pointer border-b-2 border-border bg-vestgrey-800 px-6 py-3">
+              <th className="w-1/5 cursor-pointer border-b-2 border-border px-6 py-2">
                 Symbol
               </th>
-              <th className="w-1/5 cursor-pointer border-b-2 border-border bg-vestgrey-800 px-6 py-3">
+              <th className="w-1/5 cursor-pointer border-b-2 border-border px-6 py-2">
                 Mark Price
               </th>
-              <th className="w-1/5 cursor-pointer border-b-2 border-border bg-vestgrey-800 px-6 py-3">
+              <th className="w-1/5 cursor-pointer border-b-2 border-border px-6 py-2">
                 24h Change
               </th>
-              <th className="w-1/5 cursor-pointer border-b-2 border-border bg-vestgrey-800 px-6 py-3">
+              <th className="w-1/5 cursor-pointer border-b-2 border-border px-6 py-2">
                 1h Funding
               </th>
             </tr>
@@ -61,10 +66,10 @@ function SelectTickerTable({
                   className="group cursor-pointer"
                   onClick={() => handleSelectTicker(ticker)}
                 >
-                  <td className="px-6 py-2 font-mono text-vestgrey-50 group-hover:bg-primary/5">
+                  <td className="px-6 py-1.5 font-mono text-vestgrey-50 group-hover:bg-primary/5">
                     <div className="flex items-center gap-3">
                       <img
-                        src="/tokens/star.svg"
+                        src="/common/star.svg"
                         alt="symbol"
                         className="h-4 w-4"
                       />
@@ -74,10 +79,10 @@ function SelectTickerTable({
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-2 font-mono text-vestgrey-50 group-hover:bg-primary/5">
+                  <td className="px-6 py-1.5 font-mono text-vestgrey-50 group-hover:bg-primary/5">
                     <span className="text-green">{ticker.markPrice}</span>
                   </td>
-                  <td className="px-6 py-2 font-mono text-vestgrey-50 group-hover:bg-primary/5">
+                  <td className="px-6 py-1.5 font-mono text-vestgrey-50 group-hover:bg-primary/5">
                     <span
                       className={
                         parseFloat(ticker.priceChangePercent) < 0
@@ -88,7 +93,7 @@ function SelectTickerTable({
                       {ticker.priceChange} / {ticker.priceChangePercent}%
                     </span>
                   </td>
-                  <td className="px-6 py-2 font-mono text-vestgrey-50 group-hover:bg-primary/5">
+                  <td className="px-6 py-1.5 font-mono text-vestgrey-50 group-hover:bg-primary/5">
                     <span className="text-green">
                       {ticker.oneHrFundingRate}
                     </span>
@@ -97,7 +102,10 @@ function SelectTickerTable({
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="px-6 py-2 text-center text-gray-500">
+                <td
+                  colSpan={4}
+                  className="px-6 py-1.5 text-center text-gray-500"
+                >
                   No results found
                 </td>
               </tr>
