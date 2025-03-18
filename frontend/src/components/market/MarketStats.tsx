@@ -12,9 +12,14 @@ function MarketStats() {
       { label: "INDEX PRICE", value: ticker.indexPrice },
       {
         label: "24H CHANGE",
-        value: `${ticker?.priceChange || "-"} / ${
-          ticker?.priceChangePercent || "-"
-        }`,
+        value:
+          ticker?.priceChange && ticker?.priceChangePercent
+            ? `${
+                parseFloat(ticker?.priceChange) > 0
+                  ? "+" + ticker.priceChange
+                  : "-" + ticker.priceChange
+              } / ${ticker?.priceChangePercent + "%"}`
+            : "- / -",
         className:
           parseFloat(ticker.priceChangePercent) >= 0
             ? "text-green"
@@ -28,7 +33,7 @@ function MarketStats() {
       },
       {
         label: "FUNDING APY",
-        value: parseFloat(ticker?.cumFunding).toFixed(2) || "-",
+        value: "10%",
         className: "text-green",
       },
       { label: "OPEN INTEREST", value: "137,625.79" }, // Assuming open interest is static

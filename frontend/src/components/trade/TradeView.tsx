@@ -7,6 +7,10 @@ import { WsManager } from "../../utils/ws_manager";
 
 const timeOptions = [
   { label: "1m", value: "1m" },
+  { label: "3m", value: "3m" },
+  { label: "5m", value: "5m" },
+  { label: "15m", value: "15m" },
+  { label: "30m", value: "30m" },
   { label: "1H", value: "1h" },
   { label: "1D", value: "1d" },
 ];
@@ -64,7 +68,11 @@ export const TradeView = ({ market }: { market: string }) => {
 
   useEffect(() => {
     // Fetch initial Kline data only on first load
-    fetchKlineData(selectedTime);
+    async function getKlineData() {
+      await fetchKlineData(selectedTime);
+    }
+
+    getKlineData();
 
     WsManager.getInstance().registerCallback(
       `kline_${selectedTime}`,

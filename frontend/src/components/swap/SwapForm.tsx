@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import "./swapStyles.css";
+import PlaceOrderButton from "./PlaceOrderButton";
 
 const SwapForm: React.FC<{ market: string }> = ({ market }) => {
   const infoSections = [
@@ -28,6 +29,10 @@ const SwapForm: React.FC<{ market: string }> = ({ market }) => {
 
   const percentageValues = [25, 50, 75, 100];
   const checkboxes = ["Reduce Only", "TP/SL"];
+
+  const handlePlaceOrder = () => {
+    // Place order logic can go here
+  };
 
   return (
     <form className="relative flex-1">
@@ -160,12 +165,7 @@ const SwapForm: React.FC<{ market: string }> = ({ market }) => {
               </div>
 
               {/* Submit Button */}
-              <button
-                disabled
-                className="w-full h-12 bg-primary disabled disabled:opacity-50 text-black font-mono text-md uppercase"
-              >
-                Place Order
-              </button>
+              <PlaceOrderButton onClick={handlePlaceOrder} />
 
               {/* Account Health */}
               <div className="px-2 py-3">
