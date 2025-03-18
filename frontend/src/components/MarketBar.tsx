@@ -7,12 +7,14 @@ import MarketStats from "./market/MarketStats";
 import { WsManager } from "../utils/ws_manager";
 
 function MarketBar({ market }: { market: string }) {
-  const { setTicker } = useContext(TradesContext);
+  const { setTicker, setTickers } = useContext(TradesContext);
 
   useEffect(() => {
     getTickers().then((tickers) => {
       const marketTicker = tickers.find((ticker) => ticker.symbol === market);
       setTicker(marketTicker);
+
+      setTickers(tickers);
     });
 
     WsManager.getInstance().registerCallback(
@@ -22,6 +24,7 @@ function MarketBar({ market }: { market: string }) {
           (ticker: any) => ticker.symbol === market
         );
         setTicker(marketTicker);
+        setTickers(data);
       },
       `tickers`
     );
@@ -38,7 +41,7 @@ function MarketBar({ market }: { market: string }) {
         params: [`tickers`],
       });
     };
-  }, [market, setTicker]);
+  }, [market, setTicker, setTickers]);
 
   return (
     <>

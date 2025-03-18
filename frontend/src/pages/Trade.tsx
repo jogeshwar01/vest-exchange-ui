@@ -4,16 +4,21 @@ import PromoteBar from "../components/PromoteBar";
 import MarketBar from "../components/MarketBar";
 import SwapInterface from "../components/SwapInterface";
 import TradeInterface from "../components/TradeInterface";
-import { markets } from "../utils/constants";
 import { Helmet } from "react-helmet";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { TradesContext } from "../state/TradesProvider";
 
 export const Trade = () => {
   const { market } = useParams();
-  const { ticker } = useContext(TradesContext);
+  const { ticker, tickers } = useContext(TradesContext);
 
-  if (!markets.includes(market as string)) {
+  const isTickerValid = useMemo(() => {
+    if (!tickers.length) return true;
+
+    return tickers.some((t) => t.symbol === market);
+  }, [market, tickers]);
+
+  if (!isTickerValid) {
     return <Navigate to="/trade/ETH-PERP" />;
   }
 

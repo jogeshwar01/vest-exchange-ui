@@ -1,1 +1,1 @@
-export const markets = ["ETH-PERP", "BTC-PERP", "SOL-PERP"];
+export const marketsWithImages = ["ETH-PERP", "BTC-PERP", "SOL-PERP"];
