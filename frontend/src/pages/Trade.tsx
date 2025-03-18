@@ -5,9 +5,13 @@ import MarketBar from "../components/MarketBar";
 import SwapInterface from "../components/SwapInterface";
 import TradeInterface from "../components/TradeInterface";
 import { markets } from "../utils/constants";
+import { Helmet } from "react-helmet";
+import { useContext } from "react";
+import { TradesContext } from "../state/TradesProvider";
 
 export const Trade = () => {
   const { market } = useParams();
+  const { ticker } = useContext(TradesContext);
 
   if (!markets.includes(market as string)) {
     return <Navigate to="/trade/ETH-PERP" />;
@@ -15,6 +19,16 @@ export const Trade = () => {
 
   return (
     <div className="flex h-full flex-col">
+      <Helmet>
+        <title>{`${
+          ticker?.symbol && ticker?.markPrice
+            ? ticker?.markPrice + " | " + ticker?.symbol + " | "
+            : ""
+        } Vest`}</title>
+        <meta name="description" content="Markets Without Manipulation" />
+        <link rel="icon" href="/favicon.svg" type="image/x-icon" />
+      </Helmet>
+
       <div className="flex items-center justify-between border-b border-border px-8 py-2.5">
         <PromoteBar />
       </div>
