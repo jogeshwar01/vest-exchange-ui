@@ -16,16 +16,12 @@ export const RecentTrades = () => {
   return (
     <div className="h-full flex flex-col py-1 pl-2 pr-2 text-xs text-center recent-trades-header text-vestgrey-100 font-display bg-background">
       {/* Recent Trades Header */}
-      <div className="grid grid-cols-3 gap-4 py-2">
-        <span className="font-[300] text-[12px] leading-[14px] tracking-[0.15px] text-left">
-          Price
-        </span>
-        <span className="font-[300] text-[12px] leading-[14px] tracking-[0.15px] pr-1 text-center">
+      <div className="grid grid-cols-3 gap-4">
+        <span className="font-[300] text-[12px] text-left">Price</span>
+        <span className="font-[300] text-[12px] pr-1 text-center">
           Size (ETH)
         </span>
-        <span className="font-[300] text-[12px] leading-[14px] tracking-[0.15px] text-right">
-          Time
-        </span>
+        <span className="font-[300] text-[12px] text-right">Time</span>
       </div>
 
       {/* Scrollable Trades Data */}
@@ -39,7 +35,7 @@ export const RecentTrades = () => {
         {trades.map((trade, index) => (
           <div
             key={index}
-            className="grid grid-cols-3 py-2 px-1 text-vestgrey-100 hover:cursor-pointer hover:bg-vestgrey-800"
+            className="grid grid-cols-3 py-2 text-vestgrey-100 hover:cursor-pointer hover:bg-vestgrey-800"
           >
             <span
               className={`font-[300] text-[13px] leading-[16px] text-left ${

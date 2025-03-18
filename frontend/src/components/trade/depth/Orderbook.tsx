@@ -33,12 +33,8 @@ export const OrderBook = () => {
       <div className="relative h-full bg-background">
         <div className="flex flex-col h-full text-white fadein-floating-element bg-background xs:min-h-[25vh] md:min-h-0">
           <div className="flex justify-between text-xs px-2 py-1 text-vestgrey-100">
-            <span className="font-[300] text-[12px] leading-[14px] tracking-[0.15px] text-center">
-              Price
-            </span>
-            <span className="font-[300] text-[12px] leading-[14px] tracking-[0.15px] text-left">
-              Size
-            </span>
+            <span className="font-[300] text-[12px] text-center">Price</span>
+            <span className="font-[300] text-[12px] text-left">Size</span>
           </div>
 
           <div className="flex-1 flex flex-col relative overflow-hidden">
@@ -92,7 +88,7 @@ export const OrderBook = () => {
                 Spread
               </div>
               <div className="text-xs text-vestgrey-300">
-                {spread > 0 ? `${spread.toFixed(4)}` : "No spread"}
+                {spread > 0 ? `${spread.toFixed(4)}` : "-"}
               </div>
               <div className="text-xs text-vestgrey-300">
                 {spread > 0 && `${spreadPercentage.toFixed(1)}%`}
