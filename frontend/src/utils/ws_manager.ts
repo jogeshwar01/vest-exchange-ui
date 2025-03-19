@@ -5,13 +5,11 @@ export class WsManager {
   private static instance: WsManager;
   private bufferedMessages: any[] = [];
   private callbacks: any = {};
-  private id: number;
   private initialized: boolean = false;
 
   private constructor() {
     this.ws = new WebSocket(WEBSOCKET_SERVER_URL);
     this.bufferedMessages = [];
-    this.id = 1;
     this.init();
   }
 
