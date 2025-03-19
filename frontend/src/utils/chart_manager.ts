@@ -9,6 +9,7 @@ import {
 
 export class ChartManager {
   private candleSeries: ISeriesApi<"Candlestick">;
+  private chartCreatedTime: number = 0;
   private lastUpdateTime: number = 0;
   private chart: any;
 
@@ -84,10 +85,26 @@ export class ChartManager {
         time: (data.timestamp / 1000) as UTCTimestamp,
       }))
     );
+
+    this.chartCreatedTime = initialData[initialData.length - 1].timestamp;
   }
   public update(updatedPrice: any) {
     if (!this.lastUpdateTime) {
-      this.lastUpdateTime = new Date().getTime();
+      if (updatedPrice.timestamp) {
+        this.lastUpdateTime = updatedPrice.timestamp;
+      } else {
+        this.lastUpdateTime = new Date().getTime();
+      }
+    }
+
+    if (
+      updatedPrice.timestamp - this.chartCreatedTime >=
+      updatedPrice.interval
+    ) {
+      this.lastUpdateTime = updatedPrice.timestamp;
+      this.chartCreatedTime = updatedPrice.timestamp;
+    } else if (updatedPrice.timestamp < this.chartCreatedTime) {
+      return;
     }
 
     this.candleSeries.update({
@@ -97,10 +114,6 @@ export class ChartManager {
       high: updatedPrice.high,
       open: updatedPrice.open,
     });
-
-    if (updatedPrice.newCandleInitiated) {
-      this.lastUpdateTime = updatedPrice.time;
-    }
   }
   public destroy() {
     this.chart.remove();

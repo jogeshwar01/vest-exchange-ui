@@ -6,13 +6,13 @@ import { TradesContext } from "../../state/TradesProvider";
 import { WsManager } from "../../utils/ws_manager";
 
 const timeOptions = [
-  { label: "1m", value: "1m" },
-  { label: "3m", value: "3m" },
-  { label: "5m", value: "5m" },
-  { label: "15m", value: "15m" },
-  { label: "30m", value: "30m" },
-  { label: "1H", value: "1h" },
-  { label: "1D", value: "1d" },
+  { label: "1m", value: "1m", timestamp: 60 * 1000 },
+  { label: "3m", value: "3m", timestamp: 3 * 60 * 1000 },
+  { label: "5m", value: "5m", timestamp: 5 * 60 * 1000 },
+  { label: "15m", value: "15m", timestamp: 15 * 60 * 1000 },
+  { label: "30m", value: "30m", timestamp: 30 * 60 * 1000 },
+  { label: "1H", value: "1h", timestamp: 60 * 60 * 1000 },
+  { label: "1D", value: "1d", timestamp: 24 * 60 * 60 * 1000 },
 ];
 
 export const TradeView = ({ market }: { market: string }) => {
@@ -29,7 +29,7 @@ export const TradeView = ({ market }: { market: string }) => {
         klineData = await getKlines(
           market,
           interval,
-          Math.floor(new Date().getTime() - 1000 * 60 * 60 * 24 * 7) // Last week
+          Math.floor(new Date().getTime() - 1000 * 60 * 60 * 24 * 7)
         );
       } catch (e) {
         console.error("Error fetching Kline data:", e);
@@ -46,7 +46,7 @@ export const TradeView = ({ market }: { market: string }) => {
             high: parseFloat(x.high),
             low: parseFloat(x.low),
             open: parseFloat(x.open),
-            timestamp: new Date(x.end),
+            timestamp: x.end,
           }))
           .sort((x, y) => (x.timestamp > y.timestamp ? 1 : -1));
 
@@ -83,8 +83,8 @@ export const TradeView = ({ market }: { market: string }) => {
           high: data[2],
           low: data[3],
           close: data[4],
-          volume: data[5],
-          end: data[6],
+          volume: data[6],
+          end: data[5], // different index than that of api
           quoteVolume: data[7],
           trades: data[8],
         };
@@ -94,7 +94,9 @@ export const TradeView = ({ market }: { market: string }) => {
           high: parseFloat(kline.high),
           low: parseFloat(kline.low),
           open: parseFloat(kline.open),
-          timestamp: new Date(kline.end),
+          timestamp: kline.end,
+          interval: timeOptions.find((x) => x.value === selectedTime)
+            ?.timestamp,
         };
 
         if (chartManagerRef.current) {
