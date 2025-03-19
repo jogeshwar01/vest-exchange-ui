@@ -4,6 +4,7 @@ import { getKlines } from "../../services/api";
 import { KLine } from "../../utils/types";
 import { TradesContext } from "../../state/TradesProvider";
 import { WsManager } from "../../utils/ws_manager";
+import { UpdatedPrice } from "../../utils/chart_types";
 
 const timeOptions = [
   { label: "1m", value: "1m", timestamp: 60 * 1000 },
@@ -74,22 +75,10 @@ export const TradeView = ({ market }: { market: string }) => {
 
     getKlineData();
 
-    WsManager.getInstance().registerCallback(
+    WsManager.getInstance().registerCallback<KLine>(
       `kline_${selectedTime}`,
-      (data: any) => {
-        const kline: KLine = {
-          start: data[0],
-          open: data[1],
-          high: data[2],
-          low: data[3],
-          close: data[4],
-          volume: data[6],
-          end: data[5], // different index than that of api
-          quoteVolume: data[7],
-          trades: data[8],
-        };
-
-        const cleanedKline = {
+      (kline: KLine) => {
+        const cleanedKline: UpdatedPrice = {
           close: parseFloat(kline.close),
           high: parseFloat(kline.high),
           low: parseFloat(kline.low),

@@ -5,6 +5,7 @@ import { TradesContext } from "../../state/TradesProvider";
 import { getTrades } from "../../services/api";
 import { WsManager } from "../../utils/ws_manager";
 import { Trade } from "../../utils/types";
+import { DepthData } from "../../utils/ws_types";
 
 export const Depth = ({ market }: { market: string }) => {
   const [activeTab, setActiveTab] = useState("orderbook"); // 'orderbook' or 'recentTrades'
@@ -19,21 +20,21 @@ export const Depth = ({ market }: { market: string }) => {
       setTrades(trades);
     });
 
-    WsManager.getInstance().registerCallback(
+    WsManager.getInstance().registerCallback<DepthData>(
       "depth",
-      (data: any) => {
+      (data: DepthData) => {
         setBids(data.bids);
         setAsks(data.asks);
         setTotalBidSize(
           data.bids.reduce(
-            (acc: number, bid: any) => acc + parseFloat(bid[1]),
+            (acc: number, bid: [string, string]) => acc + parseFloat(bid[1]),
             0
           )
         );
 
         setTotalAskSize(
           data.asks.reduce(
-            (acc: number, ask: any) => acc + parseFloat(ask[1]),
+            (acc: number, ask: [string, string]) => acc + parseFloat(ask[1]),
             0
           )
         );
@@ -41,9 +42,9 @@ export const Depth = ({ market }: { market: string }) => {
       `${market}@depth`
     );
 
-    WsManager.getInstance().registerCallback(
+    WsManager.getInstance().registerCallback<Trade>(
       "trades",
-      (data: any) => {
+      (data: Trade) => {
         const newTrade: Trade = {
           id: data.id,
           price: data.price,

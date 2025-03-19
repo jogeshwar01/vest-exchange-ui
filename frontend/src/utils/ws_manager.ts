@@ -1,10 +1,24 @@
 import { WEBSOCKET_SERVER_URL } from "./constants";
+import { Ticker, Trade, KLine } from "./types";
+import {
+  BufferedMessage,
+  CallbackMap,
+  ChannelType,
+  DepthData,
+  WsKline,
+  WsMessage,
+} from "./ws_types";
 
 export class WsManager {
   private ws: WebSocket;
   private static instance: WsManager;
-  private bufferedMessages: any[] = [];
-  private callbacks: any = {};
+  private bufferedMessages: BufferedMessage[] = [];
+  private callbacks: CallbackMap = {
+    depth: [],
+    trades: [],
+    tickers: [],
+    kline: [],
+  };
   private initialized: boolean = false;
 
   private constructor() {
@@ -37,20 +51,20 @@ export class WsManager {
 
       try {
         const messageJson = JSON.parse(decodedStr);
-        const channelType =
+        const channelType: ChannelType =
           messageJson?.channel?.split("@")?.[1] || messageJson.channel;
 
         if (this.callbacks[channelType]) {
           this.callbacks[channelType].forEach(
             ({ callback, channel }: { callback: any; channel: string }) => {
               if (channelType === "depth" && channel === messageJson.channel) {
-                const updatedBids = messageJson.data.bids;
-                const updatedAsks = messageJson.data.asks;
+                const updatedBids: DepthData["bids"] = messageJson.data.bids;
+                const updatedAsks: DepthData["asks"] = messageJson.data.asks;
                 callback({ bids: updatedBids, asks: updatedAsks });
               }
 
               if (channelType === "trades" && channel === messageJson.channel) {
-                const trades = messageJson.data;
+                const trades: Trade = messageJson.data;
                 callback(trades);
               }
 
@@ -58,7 +72,7 @@ export class WsManager {
                 channelType === "tickers" &&
                 channel === messageJson.channel
               ) {
-                const tickers = messageJson.data;
+                const tickers: Ticker = messageJson.data;
                 callback(tickers);
               }
 
@@ -66,8 +80,20 @@ export class WsManager {
                 channelType?.startsWith("kline") &&
                 channel === messageJson.channel
               ) {
-                const klineData = messageJson.data;
-                callback(klineData);
+                const klineData: WsKline = messageJson.data;
+
+                const kline: KLine = {
+                  start: klineData[0],
+                  open: klineData[1],
+                  high: klineData[2],
+                  low: klineData[3],
+                  close: klineData[4],
+                  volume: klineData[6],
+                  end: klineData[5], // different index than that of api
+                  quoteVolume: klineData[7],
+                  trades: klineData[8],
+                };
+                callback(kline);
               }
             }
           );
@@ -78,7 +104,7 @@ export class WsManager {
     };
   }
 
-  sendMessage(message: any) {
+  sendMessage(message: WsMessage) {
     const currentTimeStamp = new Date().getTime();
     const messageToSend = {
       ...message,
@@ -91,7 +117,11 @@ export class WsManager {
     this.ws.send(JSON.stringify(messageToSend));
   }
 
-  async registerCallback(type: string, callback: any, channel: string) {
+  async registerCallback<T>(
+    type: string,
+    callback: (data: T) => void,
+    channel: string
+  ) {
     this.callbacks[type] = this.callbacks[type] || [];
     this.callbacks[type].push({ callback, channel });
   }
@@ -99,7 +129,7 @@ export class WsManager {
   async deRegisterCallback(type: string, channel: string) {
     if (this.callbacks[type]) {
       const index = this.callbacks[type].findIndex(
-        (callback: any) => callback.channel === channel
+        (callback) => callback.channel === channel
       );
       if (index !== -1) {
         this.callbacks[type].splice(index, 1);

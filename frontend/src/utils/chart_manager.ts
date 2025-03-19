@@ -5,17 +5,19 @@ import {
   ISeriesApi,
   LineStyle,
   UTCTimestamp,
+  IChartApi,
 } from "lightweight-charts";
+import { CandleData, UpdatedPrice } from "./chart_types";
 
 export class ChartManager {
   private candleSeries: ISeriesApi<"Candlestick">;
   private chartCreatedTime: number = 0;
   private lastUpdateTime: number = 0;
-  private chart: any;
+  private chart: IChartApi;
 
   constructor(
-    ref: any,
-    initialData: any[],
+    ref: HTMLElement | string,
+    initialData: CandleData[],
     layout: { background: string; color: string }
   ) {
     const chart = createLightWeightChart(ref, {
@@ -88,7 +90,8 @@ export class ChartManager {
 
     this.chartCreatedTime = initialData[initialData.length - 1].timestamp;
   }
-  public update(updatedPrice: any) {
+
+  public update(updatedPrice: UpdatedPrice) {
     if (!this.lastUpdateTime) {
       if (updatedPrice.timestamp) {
         this.lastUpdateTime = updatedPrice.timestamp;
@@ -98,8 +101,8 @@ export class ChartManager {
     }
 
     if (
-      updatedPrice.timestamp - this.chartCreatedTime >=
-      updatedPrice.interval
+      updatedPrice.interval &&
+      updatedPrice.timestamp - this.chartCreatedTime >= updatedPrice.interval
     ) {
       this.lastUpdateTime = updatedPrice.timestamp;
       this.chartCreatedTime = updatedPrice.timestamp;
@@ -115,6 +118,7 @@ export class ChartManager {
       open: updatedPrice.open,
     });
   }
+
   public destroy() {
     this.chart.remove();
   }

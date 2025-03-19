@@ -45,13 +45,3 @@ export interface Depth {
   asks: [string, string][];
   lastUpdateId: string;
 }
-
-export interface Ticker {
-  symbol: string;
-  markPrice: string;
-  indexPrice: string;
-  imbalance: string;
-  oneHrFundingRate: string;
-  cumFunding: string;
-  status: string;
-}

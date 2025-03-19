@@ -59,6 +59,7 @@ The WebSocket responses are Brotli compressed, and the data is decompressed befo
 
 - Built using **React**, **Node.js**, and **TypeScript**.
 - **TradingView's [`lightweight-charts`](https://github.com/tradingview/lightweight-charts)** library is used to render the candlestick chart.
+- Backend deployed on an EC2 instance. Frontend via S3 + Cloudfront.
 
 ## Setup and Installation
 

@@ -5,6 +5,7 @@ import LeverageButton from "./market/LeverageButton";
 import MarketButton from "./market/MarketButton";
 import MarketStats from "./market/MarketStats";
 import { WsManager } from "../utils/ws_manager";
+import { Ticker } from "../utils/types";
 
 function MarketBar({ market }: { market: string }) {
   const { setTicker, setTickers } = useContext(TradesContext);
@@ -17,11 +18,11 @@ function MarketBar({ market }: { market: string }) {
       setTickers(tickers);
     });
 
-    WsManager.getInstance().registerCallback(
+    WsManager.getInstance().registerCallback<Ticker[]>(
       "tickers",
-      (data: any) => {
+      (data: Ticker[]) => {
         const marketTicker = data.find(
-          (ticker: any) => ticker.symbol === market
+          (ticker: Ticker) => ticker.symbol === market
         );
         setTicker(marketTicker);
         setTickers(data);
