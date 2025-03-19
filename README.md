@@ -1,46 +1,83 @@
-# Vest Fullstack Take Home Assignment
+# Vest Exchange
 
-Vest Labs is a quantitative crypto research firm building a Vest Exchange - a highly capital efficient perpetual futures exchange that uses zero-knowledge proofs to ensure the fairest pricing for traders and liquidity providers.
+Vest Exchange is a highly capital-efficient perpetual futures exchange that employs zero-knowledge proofs to ensure fair pricing for traders and liquidity providers.
 
-As part of our team, you will be at the forefront of innovation, developing and testing groundbreaking ideas with real users. In this takehome assignment, you will be tasked with creating a frontend application that displays a live TradingView chart. 
+This repository is a frontend clone of the [Vest Exchange](https://trade.vest.exchange/) platform, designed to replicate its user interface and functionality. The backend is a proxy to the Vest Exchange backend, while the websocket communication is handled via Vest's WebSocket API.
 
-### Objective
+For further details, refer to the [Vest API documentation](https://docs.vest.exchange/getting-started/vest-api#get-klines).
 
-1. Recreate the following [Figma design](https://www.figma.com/design/Y0xGAiudDKFthVWTLnyWCT/Frontend-Takehome-Assignment?node-id=0-1&t=hmfOm6qYW2aRQwdN-1).
+> **Note:** This project is for frontend design and learning purposes only. It makes read-only API calls to the Exchange backend, and no actual trading occurs here. The Vest Exchange platform holds the copyright to all associated assets and functionality.
 
-2. Display the candlestick chart for ETH-PERP that fetches (REST) and streams (WS) 1 minute candlestick data in real time by referring to the [API docs](https://docs.vest.exchange/getting-started/vest-api#get-klines).
+## User Interface
 
-4.  **Bonus Points:**
-  
-    a. Enable users to add their live reactions to the candlestick chart. The user should be able to add emoji reactions by dragging and dropping emojis from a sidebar onto the chart. You can use the mock Node.JS / Express backend server to retrieve / add emojis.
+### Cloned Vest Design
 
-    b. Animate successful trading when clicking “Buy” to include confetti and sound. [See example](https://drive.google.com/file/d/1BFJUZw83shYzdXBv9I1maoCMkaPRmkxW/view?usp=sharing)
+![Cloned Vest](images/vest.png)
 
-        - [Sound File](https://drive.google.com/file/d/1N6gz4R2qZHrGnOzu49QUP95oQokKw6ID/view?usp=sharing)
+### Actual Vest Design
 
-    c. Include a dropdown to select for different markets
-    
-    d. Handle switching of time intervals
+Note: Some differences may exist due to the use of paid TradingView charts in the original design.
 
-### Technical Specifications
-- Use React and Typescript
-- Use TradingView's [`lightweight-charts`](https://github.com/tradingview/lightweight-charts) library for the candlestick chart (already included in `package.json`). Don't worry about matching the exact Figma design for the chart component since this library is a reduced version of what we use in production.
+![Real Vest](images/vest-real.png)
 
-### Tips
-- TradingView already has client-side caching so you don't need to implement caching
-- Ensure that WS messages are decoded correctly (they are Brotli compressed)
+## API
 
-### Evaluation Criteria:
-- **Functionality**: Does the application meet the requirements?
-- **Style / Design:** Does the application look similar to the presented Figma file?
-- **Code Quality**: Is the code well-organized, readable, and maintainable?
-- **Bonus Features**: Are any of the bonus features implemented?
+Upon initial load, the following API calls are made:
 
-### Deliverables
-- A zip file or a link to a Git repository containing:
-    - The complete source code of the frontend application.
-    - Instructions on how to set up and run the application locally.
+1. `/ticker/latest` - Retrieves all tickers.
+2. `/klines?symbol=ETH-PERP&interval=1m&startTime=1741786231596&endTime=1742391031596&limit=331` - Fetches the chart candlestick data for the specified ticker.
+3. `/trades?symbol=ETH-PERP` - Retrieves recent trades for the ticker.
 
-### Submission:
+Subsequent real-time updates are fetched via WebSocket:
 
-Please submit your assignment to [max@vest.xyz](mailto:max@vest.xyz). If you have any questions or need clarifications, feel free to reach out.
+- `{"method":"SUBSCRIBE","params":["tickers"],"id":1742391031596}` - Subscribe to updated ticker data.
+- `{"method":"SUBSCRIBE","params":["ETH-PERP@kline_1m"],"id":1742391031597}` - Subscribe to real-time candlestick data.
+- `{"method":"SUBSCRIBE","params":["ETH-PERP@depth"],"id":1742391031598}` - Subscribe to current bids/asks in the order book.
+- `{"method":"SUBSCRIBE","params":["ETH-PERP@trades"],"id":1742391031598}` - Subscribe to real-time trades data.
+
+The WebSocket responses are Brotli compressed, and the data is decompressed before being updated in real time.
+
+## Architecture
+
+1. The frontend replicates the Vest Exchange UI design.
+2. The candlestick chart is rendered for markets, utilizing both REST and WebSocket APIs to fetch and stream candlestick data in real time.
+
+3. **Other Features:**
+
+   - A dropdown menu allows users to select different markets.
+
+     ![Vest Dropdown](images/vest-dropdown.png)
+
+   - Animations for successful trades, including confetti and sound effects upon clicking “Place Order.”
+     ![Vest Confetti](images/vest-confetti.png)
+   - Integration with the Solana wallet adapter for the `Connect Wallet` feature.
+     ![Vest Wallet Adapter](images/vest-wallet-adaptor.png)
+
+   - Time interval switching for the candlestick chart.
+
+## Technical Specifications
+
+- Built using **React**, **Node.js**, and **TypeScript**.
+- **TradingView's [`lightweight-charts`](https://github.com/tradingview/lightweight-charts)** library is used to render the candlestick chart.
+
+## Setup and Installation
+
+### Backend
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+#### Frontend
+
+Update `PROXY_SERVER_URL` in `frontend/src/utils/constants.ts` to `http://localhost:7000`
+
+```
+cd frontend
+npm install
+npm run dev
+```
+
+Go to <a>http://localhost:5173</a>
